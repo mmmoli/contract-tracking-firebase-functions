@@ -13,10 +13,9 @@
   },
   "main": "lib/index.js",
   "dependencies": {
-    "dgraph-js": "^2.1.0",
+    "dgraph-js-http": "^1.1.0-rc21",
     "firebase-admin": "^8.6.0",
-    "firebase-functions": "^3.3.0",
-    "grpc": "^1.24.2"
+    "firebase-functions": "^3.3.0"
   },
   "devDependencies": {
     "@types/google-protobuf": "^3.7.2",

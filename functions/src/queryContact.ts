@@ -1,4 +1,4 @@
-import * as dgraph from "dgraph-js";
+import * as dgraph from "dgraph-js-http";
 import dateFormat from "./helpers/dateFormat";
 const gql = String.raw;
 
@@ -12,23 +12,33 @@ interface IContactWith {
   client: dgraph.DgraphClient;
 }
 
+interface Response {
+  data: {
+    contact_with: {
+      contact: string;
+    }[];
+  };
+  extensions: dgraph.Extensions;
+}
+
 interface IContactWithResult {
   personId: string;
-  date: Date;
+  date: string;
   contact_withs: string[];
 }
 
 const queryContactWith = async ({ inputVars, client }: IContactWith) => {
   const { date, personId } = inputVars;
   const dateString = dateFormat(date);
+  const personDayId = `${personId}_${dateString}`;
 
   const vars = {
-    $personDayId: `${personId}_${dateString}`
+    $personDayId: personDayId
   };
 
   const query = gql`
     query ContactWith($personDayId: string) {    
-      contact_on_day(func: eq(PersonDay.id, $personDayId)) @normalize {    
+      contact_with(func: eq(PersonDay.id, $personDayId)) @normalize {    
         PersonDay.contact_withs {
           Contact.person_days @filter(not(eq(PersonDay.id, $personDayId))) {
             contact: PersonDay.id
@@ -37,17 +47,18 @@ const queryContactWith = async ({ inputVars, client }: IContactWith) => {
       }    
     }
   `;
-  const res = await client.newTxn().queryWithVars(query, vars);
-  const contacts = res.getJson().contact_on_day;
+  const options = { readOnly: true, bestEffort: true };
+  const res = (await client
+    .newTxn(options)
+    .queryWithVars(query, vars)) as Response;
+  const { contact_with } = res.data;
 
-  const contact_withs = contacts.map(
-    (node: { contact: string }) => node.contact
-  );
+  const people = contact_with.map(node => node.contact);
 
   const result: IContactWithResult = {
     personId,
-    date,
-    contact_withs
+    date: date.toISOString(),
+    contact_withs: people
   };
 
   return result;
