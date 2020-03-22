@@ -20,28 +20,25 @@ interface createKnows {
 }
 interface createKnowsPayload {
   data: {
-    from: {
-      uid: string;
-    };
+    uid: string;
   };
 }
 
 export const createKnows = functions
   .region('europe-west1')
-  .https.onCall((data: createKnows) => {
+  .https.onCall(async (data: createKnows) => {
     const query = gql`
       mutation createKnows($fromUid: ID!, $toUid: ID!) {
-        AddPersonConnections(from: { uid: $fromUid }, to: { uid: $toUid }) {
-          from {
-            uid
-          }
+        CreateKnows(input: { fromUid: $fromUid, toUid: $toUid }) {
+          uid
         }
       }
     `;
 
-    return client
-      .request<createKnowsPayload>(query, data)
-      .then(({ data: { from: uid } }) => uid);
+    const {
+      data: { uid }
+    } = await client.request<createKnowsPayload>(query, data);
+    return uid;
   });
 
 // ********************************************************* //
