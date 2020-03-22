@@ -76,30 +76,30 @@ export const registerUserWithGraph = (payload: registerUserWithGraph) => {
 
 interface logContactVariables {
   input: {
-    fromUid: String;
-    toUid: String;
-    yyyy: String;
-    mm: String;
-    dd: String;
+    fromUid: string;
+    toUid: string;
+    yyyy: string;
+    mm: string;
+    dd: string;
   };
 }
 
 interface logContact {
-  fromUid: String;
-  toUid: String;
+  fromUid: string;
+  toUid: string;
   date: Date;
 }
 
 interface logContactPayload {
   data: {
     LogContact: {
-      id: String;
+      id: string;
       date: {
-        formatted: String;
+        formatted: string;
       };
       contactWith: [
         {
-          uid: String;
+          uid: string;
         }
       ];
     };
