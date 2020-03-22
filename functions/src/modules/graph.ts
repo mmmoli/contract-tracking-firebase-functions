@@ -19,9 +19,7 @@ interface createKnows {
   toUid: string;
 }
 interface createKnowsPayload {
-  data: {
-    uid: string;
-  };
+  uid: string;
 }
 
 export const createKnows = functions
@@ -35,19 +33,15 @@ export const createKnows = functions
       }
     `;
 
-    const {
-      data: { uid }
-    } = await client.request<createKnowsPayload>(query, data);
+    const { uid } = await client.request<createKnowsPayload>(query, data);
     return uid;
   });
 
 // ********************************************************* //
 
 interface registerUserPayload {
-  data: {
-    newPerson: {
-      uid: String;
-    };
+  newPerson: {
+    uid: String;
   };
 }
 
@@ -66,7 +60,7 @@ export const registerUserWithGraph = (payload: registerUserWithGraph) => {
 
   return client
     .request<registerUserPayload>(query, payload)
-    .then(({ data: { newPerson: uid } }) => uid);
+    .then(({ newPerson: uid }) => uid);
 };
 
 // ********************************************************* //
@@ -88,18 +82,16 @@ interface logContact {
 }
 
 interface logContactPayload {
-  data: {
-    LogContact: {
-      id: string;
-      date: {
-        formatted: string;
-      };
-      contactWith: [
-        {
-          uid: string;
-        }
-      ];
+  LogContact: {
+    id: string;
+    date: {
+      formatted: string;
     };
+    contactWith: [
+      {
+        uid: string;
+      }
+    ];
   };
 }
 
@@ -134,16 +126,14 @@ export const logContact = functions
 
     return client
       .request<logContactPayload>(query, variables)
-      .then(({ data: { LogContact } }) => LogContact);
+      .then(({ LogContact }) => LogContact);
   });
 
 interface unlogContactPayload {
-  data: {
-    UnlogContact: {
-      id: String;
-      date: {
-        formatted: String;
-      };
+  UnlogContact: {
+    id: String;
+    date: {
+      formatted: String;
     };
   };
 }
@@ -176,5 +166,5 @@ export const unlogContact = functions
 
     return client
       .request<unlogContactPayload>(query, variables)
-      .then(({ data: { UnlogContact } }) => UnlogContact);
+      .then(({ UnlogContact }) => UnlogContact);
   });
