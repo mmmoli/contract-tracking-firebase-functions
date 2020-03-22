@@ -4,8 +4,10 @@ admin.initializeApp(functions.config().firebase);
 
 import * as graph from './modules/graph';
 import * as users from './modules/users';
-import * as notifications from './modules/notifications';
+import * as sms from './modules/sms';
+import * as email from './modules/email';
 
 exports.graph = graph;
 exports.users = users;
-exports.notifications = notifications;
+exports.sms = sms;
+exports.email = email;
