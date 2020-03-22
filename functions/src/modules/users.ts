@@ -4,22 +4,25 @@ import { registerUserWithGraph } from './graph';
 
 const db = admin.firestore();
 
-export const setupNewUser = functions
-  .region('europe-west1')
-  .auth.user()
-  .onCreate(async user => {
-    const { uid, displayName, photoURL, email } = user;
+export const setupNewUser = functions.auth.user().onCreate(async user => {
+  const { uid, displayName, photoURL, email } = user;
 
-    const profile = {
-      displayName,
-      photoURL,
-      email
-    };
+  const profile = {
+    displayName,
+    photoURL,
+    email,
+    preferences: {
+      contact_via_email: true,
+      contact_via_phone: true
+    }
+  };
 
-    await db
-      .collection('profiles')
-      .doc(uid)
-      .set(profile);
+  await db
+    .collection('profiles')
+    .doc(uid)
+    .set(profile);
 
-    return registerUserWithGraph({ uid });
-  });
+  const resp = await registerUserWithGraph({ uid });
+
+  return resp;
+});
